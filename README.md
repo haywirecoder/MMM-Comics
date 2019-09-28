@@ -8,6 +8,9 @@ Currently integrated:
   * xkcd
   * peanuts
   * garfield
+  * zits
+  * baby_blues
+  * garfield
   
 
 <img src="dilbert.png"></img>
@@ -29,7 +32,7 @@ Currently integrated:
 			config: {
 			  comic: "dilbert",         // Choose between  ["dilbert", "xkcd", "garfield", "peanuts", "zits", "baby_blue"]
 			  useComnicList: true,      // use the comiclist and rotate cominc rather than static attribute
-     comicList: ["garfield", "peanuts", "zits", "baby_blue"],  //list of comic to rotate
+			  comicList: ["garfield", "peanuts", "zits", "baby_blue"],  //list of comic to rotate
 			  updateInterval : 1000 * 60 * 30,  // 30 minutes
 			  coloredImage: true,      //colored or black&white (inverted) image
 			  comicWidth: 800,

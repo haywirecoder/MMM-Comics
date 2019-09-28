@@ -11,10 +11,13 @@ module.exports = NodeHelper.create({
 		console.log("Starting node helper: " + this.name);
 	},
 
+
 	socketNotificationReceived: function (notification, payload) {
 		this.config = payload.config;
 		var comic = payload.config.comic;
+		var comicarray = payload.config.comicList;
 		var random = payload.config.random;
+		var usecomiclist =payload.config.useComnicList;
 		var dailyTime = payload.config.timeForDaily;
 		var dailyStart = moment(dailyTime[0], "k").format();
 		this.log(dailyStart);
@@ -22,16 +25,19 @@ module.exports = NodeHelper.create({
 		this.log(dailyEnd);
 		if (moment().isBetween(dailyStart, dailyEnd)) { random = false };
 
+		if  (usecomiclist && comicarray.length > 0) {
+			// randomly choose a comic to display
+			comic = comicarray[(Math.floor(Math.random() * comicarray.length))];
+			
+		}
+		this.log("displaying: " + comic);
 		this.log("Notification: " + notification + " Payload: " + comic);
 
 		if (notification === "GET_COMIC") {
 
 			switch (comic) {
 				case "dilbert":
-					this.getDilbert("en", random);
-					break;
-				case "dilbert_de":
-					this.getDilbert("de", random);
+					this.getDilbert(random);
 					break;
 				case "garfield":
 					this.getGarfield(random);
@@ -42,31 +48,91 @@ module.exports = NodeHelper.create({
 				case "peanuts":
 					this.getPeanuts(random);
 					break;
-				case "nichtlustig":
-					this.getNichtLustig(random);
+				case "zits":
+					this.getZits(random);
 					break;
-				case "ruthe":
-					this.getRuthe(random);
-					break;
+				case "baby_blue":
+						this.getBabyblues(random);
+						break;
 				default:
 					this.log("Comic not found!");
 			}
 		}
 	},
 
-	getGarfield: function (random) {
+	/*getGarfield: function (random) {
 		var self = this;
 		var url = "https://garfield.com/comic/";
 		this.log("-> Garfield request");
 		var start = new Date (1979, 1, 1);
-    var end = new Date();
+    	var end = new Date();
 		var comicDate = (random) ? new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())) : end;
-		url += moment(comicDate).format("YYYY/MM/DD") + "/";
+		//url += moment(comicDate).format("YYYY/MM/DD") + "/";
 		this.log("Trying url: "+url);
+		console.log(url)
 		request(url, function (error, response, body) {
 			var $ = cheerio.load(body);
 			var src = $(".img-responsive").attr('src');
 			self.log("Garfield -> " + src);
+			self.sendSocketNotification("COMIC", {
+				img : src
+			});
+		});
+		return;
+	},*/
+	getGarfield: function (random) {
+		var self = this;
+		var url = "https://www.gocomics.com/garfield/";
+		this.log("-> Garfield request");
+		var start = new Date (1952, 1, 1);
+		var end = new Date();
+		var comicDate = (random) ? new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())) : end;
+		url +=  moment(comicDate).subtract(3, 'hours').format("YYYY/MM/DD") + "/";
+		this.log("Trying url: "+url);
+		
+		request(url, function (error, response, body) {
+			var $ = cheerio.load(body);
+			var src = $("meta[property='og:image']").attr('content')
+			self.log("Garfield -> " + src);
+			self.sendSocketNotification("COMIC", {
+				img : src
+			});
+		});
+	
+		return;
+	},
+
+	getZits: function (random) {
+		var self = this;
+		var url = "https://www.comicskingdom.com/zits/";
+		this.log("-> Zits request");
+		var start = new Date (1952, 1, 1);
+    		var end = new Date();
+		var comicDate = (random) ? new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())) : end;
+		url += moment(comicDate).subtract(3, 'hours').format("YYYY-MM-DD") + "/";
+		this.log("Trying url: "+url);
+		request(url, function (error, response, body) {
+			var $ = cheerio.load(body);
+			var src = $("meta[property='og:image']").attr("content")
+			self.log("Zits -> " + src);
+			self.sendSocketNotification("COMIC", {
+				img : src
+			});
+		});
+		return;
+	},
+	getBabyblues: function (random) {
+		var self = this;
+		var url = "https://www.comicskingdom.com/baby-blues/";
+		var start = new Date (1952, 1, 1);
+    		var end = new Date();
+		var comicDate = (random) ? new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())) : end;
+		url += moment(comicDate).subtract(3, 'hours').format("YYYY-MM-DD") + "/";
+		this.log("Trying url: "+url);
+		request(url, function (error, response, body) {
+			var $ = cheerio.load(body);
+			var src = $("meta[property='og:image']").attr("content")
+			self.log("Baby-blues -> " + src);
 			self.sendSocketNotification("COMIC", {
 				img : src
 			});
@@ -77,16 +143,16 @@ module.exports = NodeHelper.create({
 	getPeanuts: function (random) {
 		var self = this;
 		var url = "https://www.gocomics.com/peanuts/";
-		this.log("-> Peanuts request");
+		this.log("-> peanuts request");
 		var start = new Date (1952, 1, 1);
-    		var end = new Date();
+    	var end = new Date();
 		var comicDate = (random) ? new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())) : end;
-		url += moment(comicDate).format("YYYY/MM/DD") + "/";
+		url += moment(comicDate).subtract(3, 'hours').format("YYYY/MM/DD") + "/";
 		this.log("Trying url: "+url);
 		request(url, function (error, response, body) {
 			var $ = cheerio.load(body);
-			var src = $(".item-comic-image .img-fluid").attr('srcset');
-			self.log("Peanuts -> " + src);
+			var src = $("meta[property='og:image']").attr('content');
+			self.log("peanuts -> " + src);
 			self.sendSocketNotification("COMIC", {
 				img : src
 			});
@@ -94,21 +160,18 @@ module.exports = NodeHelper.create({
 		return;
 	},
 
-	getDilbert: function (lang, random) {
+	getDilbert: function (random) {
 		var self = this;
-		var url = (lang == "en") ? "https://dilbert.com/" : "https://www.ingenieur.de/unterhaltung/dilbert/" ;
+		var url = "https://dilbert.com/";
 		this.log("-> Dilbert request");
-		if (random && (lang == "en")) {
-			var start = new Date (2000, 1, 1);
-			var end = new Date();
-  			var randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-			  this.log("Random Date: "+randomDate);
-			url += moment(randomDate).format("YYYY-MM-DD") + "/";
-		}
+		var start = new Date (1952, 1, 1);
+    	var end = new Date();
+		var comicDate = (random) ? new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())) : end;
+		url += moment(comicDate).subtract(3, 'hours').format("YYYY-MM-DD") + "/";
+		this.log("Trying url: "+url);
 		request(url, function (error, response, body) {
 			var $ = cheerio.load(body);
-			var imgClass = (lang == "en") ? ".img-comic" : ".size-large"
-			var src = $(imgClass).attr('src');
+			var src = $(".img-comic").attr('src');
 			self.log("Dilbert -> " + src);
 			self.sendSocketNotification("COMIC", {
 				img : src
@@ -117,61 +180,21 @@ module.exports = NodeHelper.create({
     	return;
 	},
 
-	getRuthe: function (random) {
-		var self = this;
-		var url = "http://ruthe.de/cartoon/";
-		this.log("-> Ruthe request");
-		if (random) {
-			var randomNr = Math.floor((Math.random() * 3233) + 1);
-			url += randomNr + "/datum/asc/"
-		} else {
-			url += "3233/datum/asc/"
-		}
-		request(url, function (error, response, body) {
-			var $ = cheerio.load(body);
-			var src = $("img").attr('src');
-			self.log("Ruthe -> " + src);
-			self.sendSocketNotification("COMIC", {
-			  img : "http://ruthe.de" + src
-		  });
-		});
-		return;
-	},
 
 	getXkcd: function (random) {
-		var url = "http://xkcd.com/";
-		request(url + "info.0.json", function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				var comic = JSON.parse(body);
-				var current = comic.num;
-			}
-		});
-
-		var date = new Date();
-		var dayOfWeek = date.getDay();
-
-		if (!random && [1,3,5].includes(dayOfWeek)) {
-			url = url + current;
-			this.log("Its Monwedfriday! Showing current xkcd comic!");
-		} else {
-			this.log("Parsing random comic")
-			var randomNumber = Math.floor((Math.random() * current) + 1);
-			// use "randomNumber = 1732;" to test with long comic
-			url = "http://xkcd.com/" + randomNumber;
-		}
+		var self = this;
+		var url = (random) ? "http://c.xkcd.com/random/comic" : "http://xkcd.com/";
+		this.log("-> xkcd request");
 		this.log(url);
-
 		request(url, function (error, response, body) {
-			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				var src = $("#comic").attr('src');
+				var src = $("meta[property='og:image']").attr('content');
 				self.log("xkcd -> " + src);
-				self.sendSocketNotification("COMIC", {img : src});
-			} else {
-				self.log("Error "+error+": Comic could not be fetched");
-			}
+				self.sendSocketNotification("COMIC", {
+					img : src
+				});
+			});
 			return;
-		});
 	},
 
 

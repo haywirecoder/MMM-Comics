@@ -2,7 +2,9 @@ Module.register("MMM-Comics", {
 
     // Default module config.
     defaults: {
-      comic: "dilbert",         // Choose between  ["dilbert", "xkcd", "garfield", "peanuts", "nichtlustig", "ruthe", "dilbert_de"]
+      comic: "dilbert",         // Choose between  ["dilbert", "xkcd", "garfield", "peanuts", "zits", "baby_blue"]
+      comicList: ["dilbert", "garfield"],  // list of comic to rotate
+      useComnicList: false,
       updateInterval : 1000 * 60 * 1,  // 1 hour
       random: false,                // choose random comic  (you can limit for the daily comic using the timeForDaily method)
       coloredImage: false,
@@ -52,6 +54,8 @@ Module.register("MMM-Comics", {
     notificationReceived: function(notification, payload, sender) {
     },
 
+ 
+    
     // Override dom generator.
     getDom: function() {
         var wrapper = document.createElement("div");
@@ -70,6 +74,7 @@ Module.register("MMM-Comics", {
       	};
 	      comicWrapper.appendChild(img);
         wrapper.appendChild(comicWrapper);
+      
         return wrapper;
     }
 });

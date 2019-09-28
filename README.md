@@ -4,12 +4,11 @@ You can choose to display a coloured and a b/w version of the comic (b/w does no
 Additionally you can choose a daily time frame at which the current daily comic (supported for dilbert, xkcd) is being shown. For the rest of the day a random comic is picked.
 
 Currently integrated:
-  * Dilbert (english and german)
+  * Dilbert (english)
   * xkcd
   * peanuts
   * garfield
-  * nichtlustig (german only)
-  * ruthe (german only)
+  
 
 <img src="dilbert.png"></img>
 
@@ -25,14 +24,17 @@ Currently integrated:
  **Example:**
 ```
   {
-    module: 'MMM-Comics',
-    position: 'bottom_bar',
-    config: {
-      comic: "dilbert",         // Choose between  ["dilbert", "xkcd", "garfield", "peanuts", "nichtlustig", "ruthe", "dilbert_de"]
-      updateInterval : 1000 * 60 * 30,  // 30 minutes
-      coloredImage: false,      //colored or black&white (inverted) image
-      comicWidth: 500,
-      timeForDaily: [7, 9]    //time frame to show the most recent (or daily) comic.
+   module: 'MMM-Comics',
+			position: 'middle_center',
+			config: {
+			  comic: "dilbert",         // Choose between  ["dilbert", "xkcd", "garfield", "peanuts", "zits", "baby_blue"]
+			  useComnicList: true,      // use the comiclist and rotate cominc rather than static attribute
+     comicList: ["garfield", "peanuts", "zits", "baby_blue"],  //list of comic to rotate
+			  updateInterval : 1000 * 60 * 30,  // 30 minutes
+			  coloredImage: true,      //colored or black&white (inverted) image
+			  comicWidth: 800,
+			  timeForDaily: [7, 9]    //time frame to show the most recent (or daily) comic.
+			}
     }
   },
 ```
@@ -40,7 +42,9 @@ Currently integrated:
 ## Config
 | **Option** | **default** | **Description** |
 | --- | --- | --- |
-| `comic` | "dilbert" | Choose between the currently available comics: ["dilbert", "dilbert_de", "xkcd", "peanuts", "garfield", "nichtlustig", "ruthe"] |
+| `comic` | "dilbert" | Choose between the currently available comics: ["dilbert", "zits", "baby_blue","xkcd", "peanuts", "garfield"] |
+| `useComnicList` | false | use the comiclist option rather than static comic |
+| `comicList` | "dilbert" | list of comics to rotate randomly |
 | `updateInterval` | 1800000 | Set to desired update interval (in ms), default is `1800000` (30 minutes). |
 | `comicWidth` | 500 | Set comic maximum width. Be If your comics are too small you can try to set a higher width here. |
 | `coloredImage` | false | Colored or black&white (inverted) image |

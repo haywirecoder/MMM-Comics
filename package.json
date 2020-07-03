@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lavolp3/MMM-Comics.git"
+    "url": "git+https://github.com/haywirecoder/MMM-Comics.git"
   },
   "author": "Dirk Kovert",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lavolp3/MMM-Comics/issues"
+    "url": "https://github.com/haywirecoder/MMM-Comics/issues"
   },
-  "homepage": "https://github.com/lavolp3/MMM-Comics#readme",
+  "homepage": "https://github.com/haywirecoder/MMM-Comics#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3"
   }
